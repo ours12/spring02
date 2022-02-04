@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script type = "text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+    <script>
+
+
+        $(document).ready(function(){
+            var user = '[[${user}]]'
+            console.log(user)
+            if(user != 'null'){
+                alert("이미 로그인 되어있습니다.")
+                window.location.replace("/")
+            }
+        });
+
+    </script>
+</head>
+<body>
+
+<div class = "nav" style="background: darkgray" >
+    <h4 class="logo">
+        <a href = "/" style="color: #ffffff;margin-left: 15px">Notice-Board</a>
+        <span th:if="${user} != 'null'" th:text="${user}+'님 환영합니다.'" style="color: #ffffff;margin-left: 20px"></span>
+        <a th:if="${user} == 'null'" id="login-text" href="/user/login" style="float: right;color: #ffffff;margin-right: 15px">
+            로그인
+        </a>
+        <a th:if="${user} != 'null'" id="logout" href="/user/logout" style="float: right;color: #ffffff;margin-right: 15px">
+            로그아웃
+        </a>
+    </h4>
+
+</div>
+
+<div id="login-form">
+    <div id="login-title">Sign up Notice Board</div>
+
+    <form class="form" action="#" th:action="@{/user/signup}" th:object="${requestDto}" method="post" novalidate="" style="width:370px">
+        <div class="form-group">
+            <div class="login-id-label">Username</div>
+            <input th:field="*{username}" type="text" id="username" name="username" placeholder="Username" class="login-input-box">
+            <small class="form-text text-danger" th:errors="*{username}" th:if="${#fields.hasErrors('username')}">username</small>
+        </div>
+
+        <div class="form-group">
+            <div class="login-id-label">Password</div>
+            <input th:field="*{password}" type="password" id="password" name="password" class="login-input-box">
+            <small class="form-text text-danger" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></small>
+        </div>
+
+        <div class="form-group">
+            <div class="login-id-label">비밀번호 확인</div>
+            <input th:field="*{checkpw}" type="password" id="checkpw" name="password" class="login-input-box">
+            <small class="form-text text-danger" th:errors="*{checkpw}" th:if="${#fields.hasErrors('checkpw')}"></small>
+        </div>
+
+        <div class="form-group">
+            <div class="login-id-label">E-mail</div>
+            <input th:field="*{email}" type="text" id="email" name="email" placeholder="E-mail" class="login-input-box">
+            <small class="form-text text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></small>
+        </div>
+        <!--        <div th:if="${error}" th:text="${error}" class="alert alert-danger" role="alert"></div>-->
+        <button id="login-id-submit">회원 가입</button>
+    </form>
+</div>
+
+</body>
+</html>

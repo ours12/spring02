@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring 1주차 </title>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+
+
+    <script>
+
+        function check(){
+            var title =document.getElementById('title').value;
+            var textarea =document.getElementById('textarea').value;
+            if(title === ""){
+                alert("제목을 입력해주세요.");
+                return false;
+            }
+            if(textarea === ""){
+                alert("내용을 입력해주세요.");
+                return false;
+            }
+            return true;
+        }
+
+        $(document).ready(function(){
+            var user = '[[${user}]]'
+            console.log(user)
+            if(user == 'null'){
+                alert("로그인을 해야합니다.")
+                window.location.replace("/user/login")
+
+            }
+        });
+        // // 사용자가 내용을 올바르게 입력하였는지 확인합니다.
+        // function isValidContents(contents) {
+        //     if (contents === '') {
+        //         alert('내용을 입력해주세요');
+        //         return false;
+        //     }
+        //     if (contents.trim().length > 200) {
+        //         alert('공백 포함 200자 이하로 입력해주세요');
+        //         return false;
+        //     }
+        //     return true;
+        // }
+
+        // 익명의 username을 만듭니다.
+        // function genRandomName(length) {
+        //     let result = '';
+        //     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        //     let charactersLength = characters.length;
+        //     for (let i = 0; i < length; i++) {
+        //         let number = Math.random() * charactersLength;
+        //         let index = Math.floor(number);
+        //         result += characters.charAt(index);
+        //     }
+        //     return result;
+        // }
+
+        // // 메모를 생성합니다.
+        // function writePost(){
+        //     // 1. 작성한 메모를 불러옵니다.
+        //
+        //     let title = $('#title1').val();
+        //     let contents = $('#Textarea1').val();
+        //     // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
+        //     if (isValidContents(contents) === false) {
+        //         return;
+        //     }
+        //     // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
+        //     let username = genRandomName(10);
+        //     // 4. 전달할 data JSON으로 만듭니다.
+        //     let data = {'username': username,'title': title, 'contents': contents};
+        //     // 5. POST /api/memos 에 data를 전달합니다.
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/api/memos",
+        //         contentType: "application/json", // JSON 형식으로 전달함을 알리기
+        //         data: JSON.stringify(data),
+        //         success: function (response) {
+        //             alert('내용이 작성되었습니다');
+        //             window.location.href=('/');
+        //         }
+        //     });
+        // }
+    </script>
+
+    <style>
+        .background-header {
+            position: fixed;
+            z-index: -1;
+            top: 0px;
+            width: 100%;
+            height: 428px;
+            background-color: lightsalmon;
+        }
+
+        .background-body {
+            position: fixed;
+            z-index: -1;
+            top: 428px;
+            height: 100%;
+            width: 100%;
+            background-color: #dee2e6;
+        }
+
+        .header {
+            margin-top: 50px;
+        }
+        .header h2 {
+            /*font-family: 'Noto Sans KR', sans-serif;*/
+            height: 33px;
+            font-size: 42px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 0.79;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header p {
+            margin: 40px auto;
+            width: 217px;
+            height: 48px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.12px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .wrap {
+            width: 500px;
+            margin: auto;
+        }
+        .input{
+            width: 500px;
+            height: 50px;
+        }
+        .textarea{
+            width: 500px;
+            display: block;
+            margin: auto;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="background-header">
+
+</div>
+<div class="background-body">
+
+</div>
+<div class="header">
+    <h2>게시글 작성 </h2>
+    <p>
+        내용을 작성합니다.
+    </p>
+</div>
+
+<form class="wrap" >
+    <div class="form-group1" action = "#" th:action="@{/api/memos}" onsubmit="return check()" th:object="${memo}" method="post">
+        <input type="text" class="input" id="title1" placeholder="title" th:field = "*{title}">
+<!--    </div>-->
+<!--    <div class="form-group2">-->
+        <textarea class="textarea" id="Textarea1" placeholder="contents" cols="30" rows="10" th:field = "*{contents}"></textarea>
+        <button id="submit" type="button" class="button is-outlined" onclick="writePost()">저장</button>
+    </div>
+
+
+</form>
+
+</body>
+</html>

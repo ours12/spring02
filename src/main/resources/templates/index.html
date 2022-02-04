@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="yeeun's 게시판">
+    <meta property="og:description" content="게시판에 글을 올려보세요!">
+    <meta property="og:image" content="static.images/og_text.png">
+    <title>Spring 게시글 목록 조회</title>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="basic.js"></script>
+<!--    <link rel="stylesheet" href="css/style.css">-->
+
+
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            getMessages();-->
+<!--        })-->
+
+<!--        function getMessages(){-->
+<!--            $.ajax({-->
+<!--                type: 'GET',-->
+<!--                url: '/api/memos',-->
+<!--                success: function (response) {-->
+<!--                    for(let i = 0; i < response.length; i++){-->
+<!--                        let memo = response[i];-->
+<!--                        let id = memo.id;-->
+<!--                        let username = memo.username;-->
+<!--                        let title = memo.title;-->
+<!--                        let contents = memo.contents;-->
+<!--                        let createdAt = memo.createdAt;-->
+<!--                        addHTML(id,username,title,contents,createdAt);-->
+<!--                    }-->
+<!--                }-->
+<!--            })-->
+<!--        }-->
+
+<!--        function addHTML(id, username, title,contents, createdAt){-->
+<!--            let tempHtml = `<div class="box">-->
+<!--                                <form>-->
+<!--                                    <div class="contents1">-->
+<!--                                        <a href="/detail/${id}"  class="tbox" id="${id}-title">${title}</a>-->
+<!--                                        <p>${contents}</p>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; date/username 영역 &ndash;&gt;-->
+<!--                                    <div class="metadata">-->
+<!--                                        <div class="date">-->
+<!--                                            ${createdAt}-->
+<!--                                        </div>-->
+<!--                                        <div id="${id}-username" class="username">-->
+<!--                                            ${username}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>`;-->
+<!--            $('#cards-box').append(tempHtml);-->
+
+<!--        }-->
+
+
+
+<!--    </script>-->
+
+    <style>
+        .background-header {
+            position: fixed;
+            z-index: -1;
+            top: 0px;
+            width: 100%;
+            height: 428px;
+            background-color: lightsalmon;
+        }
+
+        .background-body {
+            position: fixed;
+            z-index: -1;
+            top: 428px;
+            height: 100%;
+            width: 100%;
+            background-color: #dee2e6;
+        }
+
+        .header {
+            margin-top: 50px;
+        }
+        .header h2 {
+            /*font-family: 'Noto Sans KR', sans-serif;*/
+            height: 33px;
+            font-size: 42px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 0.79;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header p {
+            margin: 40px auto;
+            width: 217px;
+            height: 48px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.12px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .box{
+            width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .metadata {
+            position: relative;
+            display: flex;
+            font-family: 'Spoqa Han Sans';
+            font-size: 11px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: -0.77px;
+            text-align: left;
+            color: #adb5bd;
+            height: 14px;
+            padding: 10px 23px;
+            margin-right: 300px;
+        }
+        .username {
+            margin-left: 10px;
+        }
+        .tbox {
+            color: dimgray;
+            font-size: x-large;
+        }
+        .button{
+            display: block;
+            margin:30px auto auto auto;
+            width: 200px;
+        }
+        /*#logout-text {*/
+        /*    position:absolute;*/
+        /*    top:48px;*/
+        /*    right:48px;*/
+        /*    font-size: 18px;*/
+        /*    font-family: SpoqaHanSansNeo;*/
+        /*    font-size: 18px;*/
+        /*    font-weight: 500;*/
+        /*    font-stretch: normal;*/
+        /*    font-style: normal;*/
+        /*    line-height: 1;*/
+        /*    letter-spacing: 0.36px;*/
+        /*    text-align: center;*/
+        /*    color: #ffffff;*/
+        /*}*/
+
+    </style>
+
+</head>
+
+<body>
+<div class="background-header">
+    <div class="header-line" style="position:relative;">
+        <div id="header-title-login-user">
+            <span th:text="${user}"></span> 님의 게시판
+        </div>
+        <form id="my_form" method="post" action="/user/logout">
+            <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
+        </form>
+    </div>
+</div>
+<div class="background-body">
+
+</div>
+<div class="header">
+    <h2>전체 게시글 목록 조회</h2>
+    <p>
+        전체 게시글 목록이 조회됩니다.
+    </p>
+</div>
+<div id="cards-box" class="area-read">
+    <div class="box">
+        <form>
+            <div class="contents1">
+                <a href="/detail/"  class="tbox" id="" th:text="${title}"></a>
+                <p th:text="${contents}"></p>
+            </div>
+
+            <!-- date/username 영역 -->
+            <div class="metadata">
+                <div class="date" th:text="${modifiedAt}">
+
+                </div>
+                <div id="1-username" class="username" th:text="${username}">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<button  class="button is-outlined" onclick="window.location.href='/write'">작성하기</button>
+
+</body>
+</html>

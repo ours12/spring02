@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring 1주차 </title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <title>detail</title>
+    <script>
+        function editPost(id){
+            $(`#${id}editdiv`).show();
+            $(`#${id}submit`).show();
+            $(`#${id}text`).hide();
+            $(`#${id}removeComment`).hide();
+            $(`#${id}editComment`).hide();
+            let text = $(`#${id}text`).text();
+            $(`#${id}editinput`).val(text);
+        }
+
+        function returnPost(id){
+            $(`#${id}editdiv`).hide();
+            $(`#${id}submit`).hide();
+
+            $(`#${id}text`).show();
+            $(`#${id}removeComment`).show();
+            $(`#${id}editComment`).show();
+        }
+
+        function check1(){
+            let txt =document.getElementById('txt').value;
+            let user = '[[${user}]]'
+            if(txt === ""){
+                alert("댓글을 입력해주세요.");
+                return false;
+            }
+            if (user == "null"){
+                alert("로그인을 해야합니다.")
+                window.location.replace("/user/login")
+                return false
+            }
+            return true;
+        }
+
+        function check2(id){
+            let txt =document.getElementById(id+'editinput').value;
+            if(txt === ""){
+                alert("댓글을 입력해주세요.");
+                return false;
+            }
+            return true;
+        }
+
+        function removecheck(id){
+            if(confirm("정말로 삭제하시겠습니까?")){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        $('#[[${memo.id}]]editmemo').click(
+            function(event) {
+                var boardId = "[[${memo.id}]]";
+                window.location.replace('/api/memos/'+ memoId+'/edit');
+            })
+
+        $(document).ready(function(){
+            let user = '[[${user}]]'
+            let memouser = '[[${memo.user.username}]]'
+            if(user == 'null'){
+                console.log(user)
+
+            }else{
+                console.log(user)
+                console.log(memouser)
+                if(user == memouser){
+                    $(`#memoedit`).show();
+                }
+
+
+            }
+        });
+    </script>
+
+
+
+    <style>
+        .background-header {
+            position: fixed;
+            z-index: -1;
+            top: 0px;
+            width: 100%;
+            height: 428px;
+            background-color: lightsalmon;
+        }
+
+        .background-body {
+            position: fixed;
+            z-index: -1;
+            top: 428px;
+            height: 100%;
+            width: 100%;
+            background-color: #dee2e6;
+        }
+
+        .header {
+            margin-top: 50px;
+        }
+        .header h2 {
+            /*font-family: 'Noto Sans KR', sans-serif;*/
+            height: 33px;
+            font-size: 42px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 0.79;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header p {
+            margin: 40px auto;
+            width: 217px;
+            height: 48px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.12px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .message{
+            width: 500px;
+            margin: auto;
+        }
+        .message-body{
+            font-size: 20px;
+        }
+        .date{
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="background-header">
+
+</div>
+<div class="background-body">
+
+</div>
+<div class="header">
+    <h2>게시글 조회 </h2>
+    <p>
+        게시글이 보여집니다.
+    </p>
+</div>
+<article class="message is-light">
+    <div class="message-header">
+        <p th:text="${title}"></p>
+        <button class="del" onclick="window.location.href = '/'"></button>
+    </div>
+    <div class="message-body" th:text="${contents}">
+
+        <p th:text="${username}"></p>
+        <p class="date" th:text="${modifiedAt}" > </p>
+</article>
+
+<div id="memoedit" style="display: none">
+    <button th:id="${memo.id}+editBoard" class="btn btn-primary">수정하기</button>
+    <form action="#" th:action="@{/api/memo/}+${memo.id}" method="post" th:onsubmit="return removecheck([[${memo.id}]])" style="display: inline">
+
+        <input type="submit" class="btn btn-primary" value="삭제하기">
+        <input type="hidden" name="_method" value="delete"/>
+    </form>
+
+    <!--    댓글 작성-->
+    <form action="#" th:action="@{/api/memo/}+${memo.id}+@{/comment}" onsubmit="return check1()" method="post" th:object="${postcomment}">
+        <label>댓글</label>
+        <textarea id="txt" rows="5" th:field = "*{text}" class="form-control"></textarea>
+        <br>
+        <input type="submit" class="btn btn-primary" value="댓글작성">
+    </form>
+    <br>
+
+    <!--    댓글-->
+    <div th:each="comment : ${comment}" name="fr"  class="table table-striped text-center" style="border: solid;padding: 7px">
+        <label style="float:left;margin-left: 10px">작성자 :</label>
+        <label >내용</label>
+        <p th:text="${comment.user.username}" style="display: inline;float: left;margin-left: 5px"></p>
+        <p th:id="${comment.id}+text" th:text="${comment.text}" ></p>
+        <div style="margin-left: 100px">
+            <button th:if="${comment.user.username} == ${user}" th:id="${comment.id}+editComment" class="btn btn-primary" th:onclick=editPost([[${comment.id}]]) >수정</button>
+
+            <!--            댓글 삭제-->
+            <form th:if="${comment.user.username} == ${user}" action="#" th:action="@{/api/memo/}+${memo.id}+@{/comment/}+${comment.id}" method="post" th:onsubmit="return removecheck([[${comment.id}]])" style="display: inline">
+                <input type="submit" th:id="${comment.id}+removeComment" class="btn btn-primary" value="삭제" >
+                <input type="hidden" name="_method" value="delete"/>
+            </form>
+        </div>
+
+
+        <!--        댓글 수정-->
+        <form action="#" th:action="@{/api/memo/}+${memo.id}+@{/comment/}+${comment.id}" th:onsubmit="return check2([[${comment.id}]])" method="post" th:object="${editcomment}" >
+            <div th:id="${comment.id}+editdiv" style="display:none;">
+                <input th:id="${comment.id}+editinput" type="text"  th:field = "*{text}" th:value="${comment.text}">
+            </div>
+            <div th:id="${comment.id}+submit" style="display:none;">
+                <input  type="submit" class="btn btn-primary" value="제출" >
+                <input type="button"  class="btn btn-primary" th:onclick="returnPost([[${comment.id}]])" value="취소">
+            </div>
+
+            <input type="hidden" name="_method" value="put"/>
+        </form>
+
+
+
+    </div>
+
+</div>
+<br>
+</body>
+</html>
